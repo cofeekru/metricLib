@@ -17,18 +17,10 @@
 #include <atomic>
 
 namespace metrics {
-    class MetricCollector;
-
+    
     /**
     * @brief Abstract metric class with pure-vurtual function
     */
-
-    /**
-    * @brief Alias for pointer to metric for dynamic polymorphism
-    */
-    using MetricPtr = AbstractMetric*;
-
-    
     class AbstractMetric {
     public:
         AbstractMetric() = default;
@@ -107,11 +99,11 @@ namespace metrics {
         T* value_ = nullptr;
     };
 
-    
     /**
-    * @brief Alias for pointer to MetricStorage
+    * @brief Alias for pointer to metric for dynamic polymorphism
     */
-    using StorageMetricPtr = MetricStorage*;
+    using MetricPtr = AbstractMetric*;
+
 
     /**
     * @brief Class MetricStorage that contains all metrics that added to its
@@ -134,6 +126,11 @@ namespace metrics {
         std::map <std::string, MetricPtr> storage_;
         std::mutex mutexStorage;
     };
+    /**
+    * @brief Alias for pointer to MetricStorage
+    */
+    using StorageMetricPtr = MetricStorage*;
+
 
     /**
     * @brief Class MetricCollector that collect and storage all metrics
