@@ -1,3 +1,10 @@
+/**
+ * @file
+ * @brief C++ Library for collecting and storing metrics
+ * @version 1.0.0
+ * @authors cofeekru
+ */
+
 #pragma once
 #include <string>
 #include <mutex>
@@ -12,6 +19,16 @@
 namespace metrics {
     class MetricCollector;
 
+    /**
+    * @brief Abstract metric class with pure-vurtual function
+    */
+
+    /**
+    * @brief Alias for pointer to metric for dynamic polymorphism
+    */
+    using MetricPtr = AbstractMetric*;
+
+    
     class AbstractMetric {
     public:
         AbstractMetric() = default;
@@ -20,26 +37,59 @@ namespace metrics {
         virtual std::string getValueAsString() = 0;
     };
 
+    /**
+    * @brief Template class for metric
+    * @param[in] T Type of value that contains metric
+    * 
+    */
     template <typename T>
     class Metric: public AbstractMetric {
     public:
-        //friend class MetricCollector;
+        /**
+        * @brief Alias for function that returns value of metric
+        */
         using MetricFunction = std::function <T()>;
 
+        /**
+        * @brief Default metric constructor
+        */
         Metric() = default;
+
+        /**
+        * @brief Сonstructor that initializes the metric containing MetricFunction
+        * @param[in] name Name of metric
+        * @param[in] getMetricValue MetricFunction that returns a value of type T
+        */
         Metric(std::string name, MetricFunction getMetricValue): name_(name), getMetricValue_(getMetricValue) {};
+
+        /**
+        * @brief Сonstructor that initializes the metric without MetricFunction
+        * @param[in] name Name of metric
+        */
         Metric(std::string name): name_(name) {};
 
+        /**
+        * @brief Method returning name of metric
+        * @return Name of metric
+        */
         std::string getName() override {
             return this->name_;
         };
 
+        /**
+        * @brief Setting value of metric
+        * @param[in] value Value of metric
+        */
         void setValue(T& value) {
             mutexMetric.lock();
             value_ = &value;
             mutexMetric.unlock();
         };
 
+        /**
+        * @brief Getting value of metric
+        * @return Value of metric
+        */
         std::string getValueAsString() override {
             if (getMetricValue_ != nullptr) {
                 return std::to_string(getMetricValue_());
@@ -48,7 +98,6 @@ namespace metrics {
             } else {
                 return "";
             }
-            
         };
 
     private:
@@ -58,32 +107,56 @@ namespace metrics {
         T* value_ = nullptr;
     };
 
+    
+    /**
+    * @brief Alias for pointer to MetricStorage
+    */
+    using StorageMetricPtr = MetricStorage*;
 
-   using MetricMessage = std::map<std::string, std::string>;
-
+    /**
+    * @brief Class MetricStorage that contains all metrics that added to its
+    */
     class MetricStorage {
     public:
-        void addMetric(AbstractMetric*);
-        std::map <std::string, AbstractMetric*>& getStorage();
+        /**
+        * @brief Add metric to storage
+        * @param[in] metricPointer Pointer to metric
+        */
+        void addMetric(MetricPtr metricPointer);
+
+        /**
+        * @brief Getting reference to storage
+        * @param[in] metricPointer Pointer to metric
+        */
+        std::map <std::string, MetricPtr>& getStorage();
+
     private:
-        std::map <std::string, AbstractMetric*> storage_;
+        std::map <std::string, MetricPtr> storage_;
         std::mutex mutexStorage;
     };
 
-
+    /**
+    * @brief Class MetricCollector that collect and storage all metrics
+    */
     class MetricCollector {
     public:
-        MetricCollector(std::string filename, MetricStorage* metricStorage);
+        /**
+        * @brief Сonstructor that initializes the MetricCollector
+        * @param[in] filename File name that contain metrics
+        * @param[in] metricStorage Pointer to object of MetricStorage
+        */
+        MetricCollector(std::string filename, StorageMetricPtr metricStorage);
         void collect();
         ~MetricCollector();
 
     private:
+        using MetricMessage = std::map<std::string, std::string>;
         void writeToFile(MetricMessage);
         void workThreadFunc();
     
         std::thread workThread_;
         std::string filename_;
-        MetricStorage* storagePtr_;
+        StorageMetricPtr storagePtr_;
         std::mutex mutexCollect;
         std::mutex mutexQueue;
         std::condition_variable queueCV;
@@ -91,6 +164,5 @@ namespace metrics {
         std::atomic_bool finished;
     };
    
-    using metricPtr = AbstractMetric*;
-    using storagePtr = MetricStorage*;
+    
 }
