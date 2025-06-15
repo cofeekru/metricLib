@@ -2,16 +2,16 @@
 #include "../include/metricsLib.hpp"
 
 
-TEST (MetricTests, getNameTest) {
+TEST(MetricTests, getNameTest) {
     metrics::Metric<int> m{"testMetric"};
 
     std::string expected = "testMetric";
     std::string received = m.getName();
 
     ASSERT_EQ(expected, received);
-}
+};
 
-TEST (MetricTests, getValueTest) {
+TEST(MetricTests, getValueTest) {
     srand(time(nullptr));
     int value = rand() % 10000;
     std::function <int()> func{[&]{return value;}};
@@ -20,9 +20,9 @@ TEST (MetricTests, getValueTest) {
     std::string expected = std::to_string(value);
     std::string received = m.getValueAsString();
     ASSERT_EQ(expected, received);
-}
+};
 
-TEST (MetricTests, setValueTest) {
+TEST(MetricTests, setValueTest) {
     srand(time(nullptr));
     int value = rand() % 10000;
 
@@ -33,9 +33,9 @@ TEST (MetricTests, setValueTest) {
     std::string received = m.getValueAsString();
 
     ASSERT_EQ(expected, received);
-}
+};
 
-TEST (MetricStorageTest, addMetricTest) {
+TEST(MetricStorageTest, addMetricTest) {
     metrics::MetricStorage ms;
     std::string nameMetric = "test_1";
     metrics::Metric<int> m{nameMetric};
@@ -45,9 +45,9 @@ TEST (MetricStorageTest, addMetricTest) {
 
     ASSERT_TRUE(storage.contains(nameMetric));
     
-}
+};
 
-TEST (MetricStorageTest, stressStorageTest) {
+TEST(MetricStorageTest, stressStorageTest) {
     metrics::MetricStorage ms;
     for (size_t i = 0; i < 100000; i++) {
         std::string nameMetric = "test_" + std::to_string(i);
@@ -61,4 +61,4 @@ TEST (MetricStorageTest, stressStorageTest) {
         ASSERT_TRUE(storage.contains(nameMetric));
     }
     
-}
+};
