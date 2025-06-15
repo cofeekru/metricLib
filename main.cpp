@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     storageMetrics.addMetric(cpuUsagePtr);
     
 
-    metrics::MetricStorage* storagePtr = &storageMetrics;
+    metrics::storagePtr storagePtr = &storageMetrics;
     
     std::string filename = argv[1];
     metrics::MetricCollector collector{filename, storagePtr};

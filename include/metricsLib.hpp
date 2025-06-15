@@ -34,21 +34,28 @@ namespace metrics {
             return this->name_;
         };
 
-        /*void setValue(T value) {
+        void setValue(T& value) {
             mutexMetric.lock();
-            value_ = value;
+            value_ = &value;
             mutexMetric.unlock();
-        };*/
+        };
 
         std::string getValueAsString() override {
-            return std::to_string(getMetricValue_());
+            if (getMetricValue_ != nullptr) {
+                return std::to_string(getMetricValue_());
+            } else if (value_ != nullptr) {
+                return std::to_string(*value_);
+            } else {
+                return "";
+            }
+            
         };
 
     private:
         std::string name_;
-        MetricFunction getMetricValue_;
+        MetricFunction getMetricValue_ = nullptr;
         std::mutex mutexMetric;
-        T value_;
+        T* value_ = nullptr;
     };
 
 
