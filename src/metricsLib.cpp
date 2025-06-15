@@ -6,18 +6,18 @@
 #include <fstream>
 #include <iomanip>
 namespace metrics {
-    void MetricStorage::addMetric(AbstractMetric* metric) {
+    void MetricStorage::addMetric(MetricPtr metric) {
         mutexStorage.lock();
         std::string nameMetric = metric->getName();
         this->storage_[nameMetric] = metric;
         mutexStorage.unlock();
     }
     
-    std::map <std::string, AbstractMetric*>& MetricStorage::getStorage() {
+    std::map <std::string, MetricPtr>& MetricStorage::getStorage() {
         return storage_;
     }
 
-    MetricCollector::MetricCollector(std::string filename, MetricStorage* storage) {
+    MetricCollector::MetricCollector(std::string filename, StorageMetricPtr storage) {
         filename_ = filename;
         storagePtr_ = storage;
         workThread_ = std::thread(&MetricCollector::workThreadFunc, this);

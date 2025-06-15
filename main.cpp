@@ -23,18 +23,18 @@ int main(int argc, char* argv[]) {
     metrics::Metric<int>httpRequests{"HTTP", get_http_requests_rps};
     metrics::Metric<float>cpuUsage{"CPU", get_cpu_usage};
 
-    metrics::metricPtr httpRequestsPtr = &httpRequests;
-    metrics::metricPtr cpuUsagePtr = &cpuUsage;
+    metrics::MetricPtr httpRequestsPtr = &httpRequests;
+    metrics::MetricPtr cpuUsagePtr = &cpuUsage;
     
     metrics::MetricStorage storageMetrics;
     storageMetrics.addMetric(httpRequestsPtr);
     storageMetrics.addMetric(cpuUsagePtr);
     
 
-    metrics::storagePtr storagePtr = &storageMetrics;
+    metrics::StorageMetricPtr storageMetricPtr = &storageMetrics;
     
     std::string filename = argv[1];
-    metrics::MetricCollector collector{filename, storagePtr};
+    metrics::MetricCollector collector{filename, storageMetricPtr};
     
     
     for (int i = 0; i < 10; ++i) {

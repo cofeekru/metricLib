@@ -41,7 +41,7 @@ TEST (MetricStorageTest, addMetricTest) {
     metrics::Metric<int> m{nameMetric};
     ms.addMetric(&m);
     
-    std::map <std::string, metrics::metricPtr> storage = ms.getStorage();
+    std::map <std::string, metrics::MetricPtr> storage = ms.getStorage();
 
     ASSERT_TRUE(storage.contains(nameMetric));
     
@@ -54,7 +54,7 @@ TEST (MetricStorageTest, stressStorageTest) {
         metrics::Metric<int> m{nameMetric};
         ms.addMetric(&m);
     }
-    std::map <std::string, metrics::metricPtr> storage = ms.getStorage();
+    std::map <std::string, metrics::MetricPtr> storage = ms.getStorage();
 
     for (size_t i = 0; i < 100000; i++) {
         std::string nameMetric = "test_" + std::to_string(i);
