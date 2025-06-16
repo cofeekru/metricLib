@@ -148,7 +148,12 @@ namespace metrics {
         * @param[in] metricStorage Pointer to object of MetricStorage
         */
         MetricCollector(std::string filename, StorageMetricPtr metricStorage);
+
+        /**
+        * @brief Collect all metrics
+        */
         void collect();
+        
         ~MetricCollector();
 
     private:

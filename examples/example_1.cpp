@@ -36,11 +36,17 @@ int main(int argc, char* argv[]) {
     std::string filename = argv[1];
     metrics::MetricCollector collector{filename, storageMetricPtr};
     
-    
-    for (int i = 0; i < 10; ++i) {
-        std::this_thread::sleep_for(std::chrono::seconds(1)); 
-        collector.collect(); 
-    }
+
+    std::atomic_bool statusWork = true;
+    std::thread thread_1([&]() {
+        while (statusWork) {
+            std::this_thread::sleep_for(std::chrono::seconds(1)); 
+            collector.collect(); 
+        }
+    });
+    std::this_thread::sleep_for(std::chrono::seconds(25)); 
+    statusWork = false;
+    thread_1.join();
     
     return 0;
 }
