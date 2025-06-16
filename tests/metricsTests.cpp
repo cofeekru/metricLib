@@ -1,5 +1,3 @@
-// Copyright 2008, Google Inc.
-// All rights reserved.
 #include <gtest/gtest.h>
 #include "../include/metricsLib.hpp"
 
@@ -24,15 +22,17 @@ TEST(MetricTests, getValueTest) {
     ASSERT_EQ(expected, received);
 };
 
-TEST(MetricTests, setValueTest) {
+TEST(MetricTests, setMetricFunctionTest) {
     srand(time(nullptr));
     int value = rand() % 10000;
 
     metrics::Metric<int> m{"testMetric"};
+    
+    std::function <int()> func([&]{return value;});
 
-    m.setValue(value);
-    std::string expected = std::to_string(value);
-    std::string received = m.getValueAsString();
+    m.setMetricFunction(func);
+    int expected = value;
+    int received = m.getValue();
 
     ASSERT_EQ(expected, received);
 };

@@ -69,34 +69,39 @@ namespace metrics {
         };
 
         /**
-        * @brief Setting value of metric
-        * @param[in] value Value of metric
+        * @brief Method setting MetricFunction
+        * @param[in] function MetricFunction
         */
-        void setValue(T& value) {
+        void setMetricFunction(MetricFunction function) {
             mutexMetric.lock();
-            value_ = &value;
+            getMetricValue_ = function;
             mutexMetric.unlock();
         };
 
         /**
-        * @brief Getting value of metric
-        * @return Value of metric
+        * @brief Method getting value of metric
+        * @return Value of metric converted to string
         */
         std::string getValueAsString() override {
             if (getMetricValue_ != nullptr) {
                 return std::to_string(getMetricValue_());
-            } else if (value_ != nullptr) {
-                return std::to_string(*value_);
             } else {
                 return "";
-            }
+            } 
+        };
+
+        /**
+        * @brief Method getting value of metric
+        * @return Value of metric
+        */
+        T getValue() {
+            return getMetricValue_();
         };
 
     private:
         std::string name_;
         MetricFunction getMetricValue_ = nullptr;
         std::mutex mutexMetric;
-        T* value_ = nullptr;
     };
 
     /**

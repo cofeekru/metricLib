@@ -11,10 +11,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pthread")
 
 
 
+
 enable_testing()
-
-add_library(${this} STATIC src/metricsLib.cpp include/metricsLib.hpp)
-
 add_subdirectory(tests)
 
-add_executable(main main.cpp src/metricsLib.cpp)
+
+file(GLOB headers "include/*.hpp")
+file(GLOB sources "src/*.cpp")
+
+add_library(${this} STATIC ${sources} ${headers})
+
+add_subdirectory(examples)
