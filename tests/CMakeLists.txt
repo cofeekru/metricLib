@@ -22,4 +22,4 @@ target_link_libraries(${this}
     GTest::GTest 
     metrics)
 
-add_test(metricsGTests metricsTests)
+add_test(NAME metricsTests COMMAND metricsTests)
